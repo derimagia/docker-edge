@@ -67,6 +67,11 @@ server {
 
   root {{ $nginxRoot }};
 
+  {{ end }}
+
+  # Drupal
+  {{ if eq $sitetype "drupal" }}
+
   location = /favicon.ico {
     log_not_found off;
     access_log off;
@@ -77,10 +82,17 @@ server {
     access_log off;
   }
 
-  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+  # Media: images, icons, video, audio, HTC
+  location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
     expires max;
+    access_log off;
     log_not_found off;
     add_header Cache-Control "public";
+  }
+
+  location ~* \.(?:css|js)$ {
+    access_log off;
+    expires 30d;
   }
 
   # Feed
@@ -99,17 +111,11 @@ server {
     return 403;
   }
 
-  # Media: images, icons, video, audio, HTC
-  location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
-    expires max;
-    access_log off;
-    add_header Cache-Control "public";
-  }
-
   # Cross domain webfont access
   location ~* \.(?:ttf|ttc|otf|eot|woff|woff2)$ {
     expires 1M;
     access_log off;
+    log_not_found off;
     add_header Cache-Control "public";
   }
 
@@ -118,10 +124,6 @@ server {
     deny all;
     return 404;
   }
-  {{ end }}
-
-  # Drupal
-  {{ if eq $sitetype "drupal" }}
 
   location ~ ^/sites/.*/private/ {
     deny all;
@@ -159,7 +161,10 @@ server {
 
   # Just Proxy
   location / {
-    proxy_pass $host;
+    proxy_pass http://{{ trim $host }};
+
+    # Don't double log
+    access_log  off;
   }
 
   {{ end }}
