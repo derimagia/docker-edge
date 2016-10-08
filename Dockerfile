@@ -14,8 +14,8 @@ RUN wget https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VER
 
 RUN mkdir -p /etc/docker-gen/templates/
 
-COPY nginx.sites.tmpl /etc/docker-gen/templates/
-COPY nginx.conf /etc/nginx/
+COPY etc/nginx.sites.tmpl /etc/docker-gen/templates/
+COPY etc/nginx.conf /etc/nginx/
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
