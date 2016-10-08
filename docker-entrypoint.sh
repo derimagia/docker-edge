@@ -1,7 +1,8 @@
 #!/bin/sh
 set -e
 
-if [[ -f "/var/run/docker.sock" ]]; then
+socket_file=${DOCKER_HOST#unix://}
+if [ -S $socket_file ]; then
   docker-gen /etc/docker-gen/templates/nginx.sites.tmpl /etc/nginx/conf.d/default.conf
 fi
 

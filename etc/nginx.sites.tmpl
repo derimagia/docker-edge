@@ -35,8 +35,7 @@ upstream {{ $host }} {
   {{ range $knownNetwork := $CurrentContainer.Networks }}
   {{ range $containerNetwork := $container.Networks }}
   {{ if eq $knownNetwork.Name $containerNetwork.Name }}
-      ## Can be connect with "{{ $containerNetwork.Name }}" network
-
+    ## Can be connect with "{{ $containerNetwork.Name }}" network
   {{/* If only 1 port exposed, use that */}}
   {{ if eq $addrLen 1 }}
 
